@@ -21,32 +21,22 @@ public class WriteDatasetToKafka {
 
         SensorData sensorData;
         DatasetMap.initMap();
-        Reader in = new FileReader(AppConfiguration.OUTPUT_FILE);
+        Reader in = new FileReader(AppConfiguration.DATASET_FILE);
         //Writer out = new FileWriter(AppConfiguration.OUTPUT_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
         int i = 0 ;
         long ts = 0;
         for (CSVRecord record : records) {
-/*
-            if (!isNotPlayer(Long.parseLong(record.get(0))) && !prePostMatchEvent(Long.parseLong(record.get(1))/10000)){
-*/
-                sensorData = new SensorData(Long.parseLong(record.get(0)),Long.parseLong(record.get(1))/100000,Long.parseLong(record.get(2)),
-                        Long.parseLong(record.get(3)),Long.parseLong(record.get(4)));
-                if (i == 0)
-                    ts = sensorData.getTs();
-                if (i> 0 )
-                    sensorData.setTs(sensorData.getTs() - ts);
-                /*out.write(record.get(0)+","
-                        +String.valueOf(((Long.parseLong(record.get(1))/10000)))+
-                        ","+record.get(2)+","+record.get(3)+","
-                        +record.get(5)+"\n");
-                out.flush();*/
+
+            if (!isNotPlayer(Long.parseLong(record.get(0))) && !prePostMatchEvent(Long.parseLong(record.get(1)))){
+
+                sensorData = new SensorData(Long.parseLong(record.get(0)),Long.parseLong(record.get(1))/1000000000,Long.parseLong(record.get(2)),
+                        Long.parseLong(record.get(3)),Long.parseLong(record.get(5)),DatasetMap.getDatasetMap().get(Long.parseLong(record.get(0))));
                 KafkaConnectors.kafkaProducer(AppConfiguration.TOPIC, AppConfiguration.KEY,AppConfiguration.PRODUCER_KAFKA_BROKER,sensorData);
                 i++;
-           // }
+            }
         }
         System.out.println(i);
-        //KafkaConnectors.kafkaProducer(AppConfiguration.TOPIC, AppConfiguration.KEY,AppConfiguration.PRODUCER_KAFKA_BROKER,sensorData);
         System.exit(0);
 
     }

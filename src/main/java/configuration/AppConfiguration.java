@@ -9,12 +9,12 @@ import java.util.Properties;
 public class AppConfiguration {
 
     public static final String FILENAME = "/Users/marco/Desktop/application.properties";
-    public static final long TS_MATCH_START = 1075329559442L;
-    public static final long TS_MATCH_STOP = 1487963914640L;
+    public static final long TS_MATCH_START = 10753295594424116L;
+    public static final long TS_MATCH_STOP = 14879639146403495L;
     public static final String OUTPUT_FILE = "/Users/marco/Desktop/dataset";
 
     // watermark
-    public static long WATERMARK_INTERVAL = 100;
+    public static long WATERMARK_INTERVAL = 1;
 
     // dataset
     public static String DATASET_FILE = "/Users/marco/Downloads/full-game";

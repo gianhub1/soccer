@@ -14,7 +14,6 @@ import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumerBase;
 import time.SensorDataExtractor;
 
 
@@ -42,13 +41,12 @@ public class QueryOne {
         FlinkKafkaConsumer010<SensorData> kafkaConsumer = KafkaConnectors.kafkaConsumer(AppConfiguration.TOPIC,AppConfiguration.CONSUMER_ZOOKEEPER_HOST,
                 AppConfiguration.CONSUMER_KAFKA_BROKER);
 
-        FlinkKafkaConsumerBase<SensorData> kafkaConsumerTS = kafkaConsumer.assignTimestampsAndWatermarks(new SensorDataExtractor());
-
-        DataStream<SensorData> sensorDataStream = env.addSource(kafkaConsumerTS);
+        DataStream<SensorData> sensorDataStream = env.addSource(kafkaConsumer);
+        SingleOutputStreamOperator<SensorData> stream = sensorDataStream.assignTimestampsAndWatermarks(new SensorDataExtractor());
 
         //DataStream<SensorData> filteredSDS = sensorDataStream.filter(new NoBallsAndRefsFilter());
 
-        WindowedStream windowedSDS = sensorDataStream.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
+        WindowedStream windowedSDS = stream.keyBy(new SensorKey()).timeWindow(Time.milliseconds(10));
 
         SingleOutputStreamOperator queryOneOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageFF(),new AverageWF());
 

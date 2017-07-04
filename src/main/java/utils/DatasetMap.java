@@ -51,8 +51,8 @@ public class DatasetMap {
             datasetMap.put(99L,"Leon Krapf");
             datasetMap.put(100L,"Leon Krapf");
             //Kevin Baer (Left Leg: 63, Right Leg: 64)
-            datasetMap.put(63L,"Hand");
-            datasetMap.put(64L,"Hand");
+            datasetMap.put(63L,"Kevin Baer");
+            datasetMap.put(64L,"Kevin Baer");
             //Luca Ziegler (Left Leg: 65, Right Leg: 66)
             datasetMap.put(65L,"Luca Ziegler");
             datasetMap.put(66L,"Luca Ziegler");

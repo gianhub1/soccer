@@ -12,17 +12,19 @@ public class SensorData {
     private long x;
     private long y;
     private double v;
+    private String key;
 
     public SensorData(){
 
     }
 
-    public SensorData(long sid, long ts, long x, long y, long v){
+    public SensorData(long sid, long ts, long x, long y, long v,String key){
         this.sid=sid;
         this.ts=ts;
         this.x=x;
         this.y=y;
         this.v=v;
+        this.key = key;
 
     }
 
@@ -80,5 +82,13 @@ public class SensorData {
 
     public Double computeDistance(double x, double y) {
         return Math.sqrt(x*x + y*y);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
