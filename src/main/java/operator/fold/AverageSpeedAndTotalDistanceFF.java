@@ -7,7 +7,7 @@ import org.apache.flink.api.java.tuple.Tuple5;
 /**
  * Created by marco on 04/07/17.
  */
-public class AverageFF implements FoldFunction<SensorData, Tuple5<SensorData, Long,Double,Long,Long>> {
+public class AverageSpeedAndTotalDistanceFF implements FoldFunction<SensorData, Tuple5<SensorData, Long,Double,Long,Long>> {
 
     @Override
     public Tuple5<SensorData, Long, Double, Long,Long> fold(Tuple5<SensorData, Long, Double, Long,Long> in, SensorData sensorData) throws Exception {

@@ -2,18 +2,21 @@ package core;
 
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
-import kafka.KafkaConnectors;
 import model.SensorData;
-import operator.fold.AverageFF;
+import operator.flatmap.StringMapper;
+import operator.fold.AverageSpeedAndTotalDistanceFF;
 import operator.key.SensorKey;
-import operator.window.AverageWF;
+import operator.key.SensorSid;
+import operator.reduce.ReducePlayer;
+import operator.reduce.ReduceSid;
+import operator.window.PlayerWF;
+import operator.window.SensorWF;
 import org.apache.flink.api.java.tuple.Tuple5;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
 import time.SensorDataExtractor;
 
 
@@ -38,19 +41,38 @@ public class QueryOne {
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
-        FlinkKafkaConsumer010<SensorData> kafkaConsumer = KafkaConnectors.kafkaConsumer(AppConfiguration.TOPIC,AppConfiguration.CONSUMER_ZOOKEEPER_HOST,
-                AppConfiguration.CONSUMER_KAFKA_BROKER);
 
-        DataStream<SensorData> sensorDataStream = env.addSource(kafkaConsumer);
-        SingleOutputStreamOperator<SensorData> stream = sensorDataStream.assignTimestampsAndWatermarks(new SensorDataExtractor());
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.OUTPUT_FILE+"_new").flatMap(new StringMapper()).assignTimestampsAndWatermarks(new SensorDataExtractor()).setParallelism(1);
 
-        //DataStream<SensorData> filteredSDS = sensorDataStream.filter(new NoBallsAndRefsFilter());
+        /**
+         * Average speed and total distance by sid in 1 minute
+         */
+        WindowedStream windowedSDS = fileStream.keyBy(new SensorSid()).timeWindow(Time.minutes(1));
+        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageSpeedAndTotalDistanceFF(),new SensorWF());
 
-        WindowedStream windowedSDS = stream.keyBy(new SensorKey()).timeWindow(Time.milliseconds(10));
+        /**
+         * Average speed and total distance by player in 1 minute
+         */
+        WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
+        SingleOutputStreamOperator playerMinuteOutput = minutePlayerStream.reduce(new ReduceSid(), new PlayerWF());
 
-        SingleOutputStreamOperator queryOneOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageFF(),new AverageWF());
+        //playerMinuteOutput.print();
 
-        queryOneOutput.print();
+        /**
+         * Average speed and total distance by player in 5 minute
+         */
+        WindowedStream fiveMinutePlayerStream = playerMinuteOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(5));
+        SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream.reduce(new ReducePlayer(), new PlayerWF());
+
+        //fiveMinutePlayerOutput.print();
+
+        /**
+         * Average speed and total distance by player in all match
+         */
+        WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.keyBy(new SensorKey()).timeWindow(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60)));
+        SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.reduce(new ReducePlayer(), new PlayerWF());
+
+        //allMatchPlayerOutput.print();
 
         env.execute("SoccerQueryOne");
 

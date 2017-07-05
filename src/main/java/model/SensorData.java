@@ -7,34 +7,27 @@ public class SensorData {
 
 
 
-    private long sid;
     private long ts;
     private long x;
     private long y;
     private double v;
     private String key;
+    private long sid;
 
     public SensorData(){
 
     }
 
-    public SensorData(long sid, long ts, long x, long y, long v,String key){
-        this.sid=sid;
+    public SensorData(String key,long ts, long x, long y, double v,long sid){
+        this.key = key;
         this.ts=ts;
         this.x=x;
         this.y=y;
         this.v=v;
-        this.key = key;
-
-    }
-
-    public long getSid() {
-        return sid;
-    }
-
-    public void setSid(long sid) {
         this.sid = sid;
+
     }
+
 
     public long getTs() {
         return ts;
@@ -68,15 +61,14 @@ public class SensorData {
         this.v = v;
     }
 
-
     @Override
     public String toString() {
         return "SensorData{" +
-                "sid=" + sid +
-                ", ts=" + ts +
+                "ts=" + ts +
                 ", x=" + x +
                 ", y=" + y +
                 ", v=" + v +
+                ", key='" + key + '\'' +
                 '}';
     }
 
@@ -90,5 +82,13 @@ public class SensorData {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public long getSid() {
+        return sid;
+    }
+
+    public void setSid(long sid) {
+        this.sid = sid;
     }
 }

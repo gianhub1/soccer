@@ -14,10 +14,10 @@ public class NoBallsAndRefsFilter implements FilterFunction<SensorData> {
 
     @Override
     public boolean filter(SensorData sensorData) throws Exception {
-        return (sensorData!=null && !isPlayer(sensorData.getSid()) && !prePostMatchEvent(sensorData.getTs()));
+        return (sensorData!=null && !isPlayer(sensorData.getKey()) && !prePostMatchEvent(sensorData.getTs()));
     }
 
-    public boolean isPlayer(long sid){
+    public boolean isPlayer(String sid){
         return ((DatasetMap.getDatasetMap().get(sid)==null || DatasetMap.getDatasetMap().get(sid).equals("Ball")
         || DatasetMap.getDatasetMap().get(sid).equals("Hand") || DatasetMap.getDatasetMap().get(sid).equals("Referee")));
     }
