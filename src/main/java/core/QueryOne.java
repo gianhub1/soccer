@@ -4,7 +4,7 @@ import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
 import model.SensorData;
 import operator.flatmap.StringMapper;
-import operator.fold.AverageSpeedAndTotalDistanceFF;
+import operator.fold.AverageFF;
 import operator.key.SensorKey;
 import operator.key.SensorSid;
 import operator.reduce.ReducePlayer;
@@ -48,7 +48,7 @@ public class QueryOne {
          * Average speed and total distance by sid in 1 minute
          */
         WindowedStream windowedSDS = fileStream.keyBy(new SensorSid()).timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageSpeedAndTotalDistanceFF(),new SensorWF());
+        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageFF(true),new SensorWF());
 
         /**
          * Average speed and total distance by player in 1 minute
@@ -72,7 +72,7 @@ public class QueryOne {
         WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.keyBy(new SensorKey()).timeWindow(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60)));
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.reduce(new ReducePlayer(), new PlayerWF());
 
-        //allMatchPlayerOutput.print();
+        allMatchPlayerOutput.print();
 
         env.execute("SoccerQueryOne");
 
