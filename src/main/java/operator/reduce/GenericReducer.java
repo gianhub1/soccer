@@ -19,9 +19,9 @@ public class GenericReducer implements ReduceFunction<Tuple5<Long,Long,String,Do
         long start_timestamp = 0;
         long end_timestamp = 0;
         if (first.f0 >= second.f0)
-            start_timestamp = first.f0;
-        else
             start_timestamp = second.f0;
+        else
+            start_timestamp = first.f0;
         if (first.f1 >= second.f1)
             end_timestamp = first.f1;
         else

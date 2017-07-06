@@ -15,7 +15,6 @@ public class PlayerWF implements WindowFunction<Tuple5<Long,Long,String,Double,D
 
     @Override
     public void apply(String key, Window window, Iterable<Tuple5<Long, Long, String,Double, Double>> iterable, Collector<Tuple5<Long, Long,String, Double, Double>> collector) throws Exception {
-        Tuple5<Long, Long,String,Double,Double> lastestTuple = iterable.iterator().next();
-        collector.collect(lastestTuple);
+        collector.collect(iterable.iterator().next());
     }
 }

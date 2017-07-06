@@ -22,6 +22,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
+import time.TupleExtractor;
 
 
 /**
@@ -46,42 +47,39 @@ public class QueryTwo {
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.OUTPUT_FILE+"_new").flatMap(new StringMapper()).assignTimestampsAndWatermarks(new SensorDataExtractor()).setParallelism(1);
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.OUTPUT_FILE).flatMap(new StringMapper()).setParallelism(1);
 
         /**
          * Average speed by sid in 1 minute
          */
-        WindowedStream windowedSDS = fileStream.keyBy(new SensorSid()).timeWindow(Time.minutes(1));
+        WindowedStream windowedSDS = fileStream.assignTimestampsAndWatermarks(new SensorDataExtractor()).keyBy(new SensorSid()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageFF(false),new SensorWF());
 
         /**
          * Average speed by player in 1 minute
          */
-        WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
+        WindowedStream minutePlayerStream = sidOutput.assignTimestampsAndWatermarks(new TupleExtractor()).keyBy(new SensorKey()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteOutput = minutePlayerStream.reduce(new ReduceSid(), new PlayerWF());
-
         /**
          * Top 5 rank in 1 minute
          */
-        AllWindowedStream rankMinuteWindow = playerMinuteOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes(1)));
-        SingleOutputStreamOperator rankMinuteOutput = rankMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
+        //AllWindowedStream rankMinuteWindow = playerMinuteOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(1)));
+        //SingleOutputStreamOperator rankMinuteOutput = rankMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMinuteOutput.print();
 
         /**
          * Top 5 rank in 5 minutes
          */
-        AllWindowedStream rankFiveMinuteWindow = playerMinuteOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
+        AllWindowedStream rankFiveMinuteWindow = playerMinuteOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         rankFiveMinuteOutput.print();
-
-        //fiveMinutePlayerOutput.print();
 
         /**
          * Top 5 rank in all match
          */
-        AllWindowedStream rankMatchMinuteWindow = playerMinuteOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
-        SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
-        rankMatchOutput.print();
+        //AllWindowedStream rankMatchMinuteWindow = playerMinuteOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
+        //SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
+        //rankMatchOutput.print();
 
 
         env.execute("SoccerQueryTwo");
