@@ -69,7 +69,7 @@ public class QueryOne {
          */
         WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.keyBy(new SensorKey()).timeWindow(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60)));
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.reduce(new ReducePlayer(), new PlayerWF());
-        //allMatchPlayerOutput.print();
+        allMatchPlayerOutput.print();
 
         env.execute("SoccerQueryOne");
 

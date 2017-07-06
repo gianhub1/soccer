@@ -71,14 +71,14 @@ public class QueryTwo {
          */
         AllWindowedStream rankFiveMinuteWindow = playerMinuteOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
-        rankFiveMinuteOutput.print();
+        //rankFiveMinuteOutput.print();
 
         /**
          * Top 5 rank in all match
          */
-        AllWindowedStream rankMatchMinuteWindow = playerMinuteOutput.setParallelism(1).windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil(69))));
+        AllWindowedStream rankMatchMinuteWindow = playerMinuteOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil(69))));
         SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
-        //rankMatchOutput.print();
+        rankMatchOutput.print();
 
 
         env.execute("SoccerQueryTwo");
