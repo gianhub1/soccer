@@ -8,9 +8,21 @@ import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExt
  */
 public class TupleExtractor extends AscendingTimestampExtractor<Tuple5<Long,Long,String,Double,Double>> {
 
+
+/*
+    private static Time delay = Time.minutes(1);
+    public TupleExtractor() {
+        super(delay);
+    }
+*/
+
     @Override
     public long extractAscendingTimestamp(Tuple5<Long, Long, String, Double, Double> tuple) {
-        return (tuple.f1 + tuple.f0)/2;
+        return (tuple.f0+tuple.f1)/2;
     }
 
+/*    @Override
+    public long extractTimestamp(Tuple5<Long, Long, String, Double, Double> tuple) {
+        return (tuple.f0+tuple.f1)/2;
+    }*/
 }

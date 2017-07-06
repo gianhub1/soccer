@@ -14,7 +14,7 @@ public class AppConfiguration {
     public static final String OUTPUT_FILE = "/Users/marco/Desktop/dataset";
 
     // watermark
-    public static long WATERMARK_INTERVAL = 1;
+    public static long WATERMARK_INTERVAL = 1000;
 
     // dataset
     public static String DATASET_FILE = "/Users/marco/Downloads/full-game";
@@ -23,8 +23,6 @@ public class AppConfiguration {
     public static String CONSUMER_ZOOKEEPER_HOST = "localhost:2181";
     public static String CONSUMER_KAFKA_BROKER = "localhost:9092";
     public static String PRODUCER_KAFKA_BROKER = "localhost:9092";
-    public static String TOPIC = "test";
-    public static String KEY = "test";
 
 
     public static void readConfiguration() {
@@ -46,8 +44,6 @@ public class AppConfiguration {
             CONSUMER_ZOOKEEPER_HOST = prop.getProperty("CONSUMER_ZOOKEEPER_HOST");
             CONSUMER_KAFKA_BROKER = prop.getProperty("CONSUMER_KAFKA_BROKER");
             PRODUCER_KAFKA_BROKER = prop.getProperty("PRODUCER_KAFKA_BROKER");
-            TOPIC = prop.getProperty("TOPIC");
-            KEY = prop.getProperty("KEY");
 
 
 

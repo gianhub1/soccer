@@ -42,12 +42,12 @@ public class QueryOne {
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.OUTPUT_FILE).flatMap(new StringMapper()).assignTimestampsAndWatermarks(new SensorDataExtractor()).setParallelism(1);
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.OUTPUT_FILE).setParallelism(1).flatMap(new StringMapper());
 
         /**
          * Average speed and total distance by sid in 1 minute
          */
-        WindowedStream windowedSDS = fileStream.keyBy(new SensorSid()).timeWindow(Time.minutes(1));
+        WindowedStream windowedSDS = fileStream.assignTimestampsAndWatermarks(new SensorDataExtractor()).keyBy(new SensorSid()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(null,0L,new Double(0),0L,0L), new AverageFF(true),new SensorWF());
 
         /**
@@ -55,7 +55,6 @@ public class QueryOne {
          */
         WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteOutput = minutePlayerStream.reduce(new ReduceSid(), new PlayerWF());
-
         //playerMinuteOutput.print();
 
         /**
@@ -63,7 +62,6 @@ public class QueryOne {
          */
         WindowedStream fiveMinutePlayerStream = playerMinuteOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(5));
         SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream.reduce(new ReducePlayer(), new PlayerWF());
-
         //fiveMinutePlayerOutput.print();
 
         /**
@@ -71,8 +69,7 @@ public class QueryOne {
          */
         WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.keyBy(new SensorKey()).timeWindow(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60)));
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.reduce(new ReducePlayer(), new PlayerWF());
-
-        allMatchPlayerOutput.print();
+        //allMatchPlayerOutput.print();
 
         env.execute("SoccerQueryOne");
 
