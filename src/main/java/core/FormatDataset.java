@@ -13,6 +13,8 @@ import java.io.Writer;
 /**
  * Created by marco on 24/06/17.
  */
+
+//TODO DIMENSIONI IN MM DIVISIONE PER 1000
 public class FormatDataset {
 
 
@@ -25,11 +27,20 @@ public class FormatDataset {
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
         int i = 0 ;
         for (CSVRecord record : records) {
-
-            if (!isInvalid(Long.parseLong(record.get(0))) && !prePostMatchEvent(Long.parseLong(record.get(1)))){
-
+            if (!isInvalid(Long.parseLong(record.get(0))) && !prePostMatchEvent(Long.parseLong(record.get(1)))
+                    && !inInterval(Long.parseLong(record.get(1)))){
+                long x = Long.parseLong(record.get(2));
+                long y = Long.parseLong(record.get(3));
+                if (x < 0 )
+                    x += 50;
+                if (x > 52477)
+                    x -= 11;
+                if (y > 33941)
+                    y -= 24;
+                if (y < -33939)
+                    y += 21;
                 out.write(record.get(0)+","+DatasetMap.getDatasetMap().get(Long.parseLong(record.get(0)))+","+Long.parseLong(record.get(1))/1000000000
-                        +","+ Long.parseLong(record.get(2))/1000 + "," + (Long.parseLong(record.get(3)))/1000 + ","
+                        +","+ x + "," + y + ","
                         +  (Double.parseDouble(record.get(5))/1000000) + "\n" );
                 out.flush();
                 i++;
@@ -47,6 +58,10 @@ public class FormatDataset {
 
     public static boolean prePostMatchEvent(long timestamp){
         return (timestamp < AppConfiguration.TS_MATCH_START || timestamp > AppConfiguration.TS_MATCH_STOP);
+    }
+
+    public static boolean inInterval (long timestamp){
+        return (timestamp > AppConfiguration.TS_INTERVAL_START && timestamp < AppConfiguration.TS_INTERVAL_STOP);
     }
 
 }

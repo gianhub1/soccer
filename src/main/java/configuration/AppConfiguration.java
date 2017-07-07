@@ -3,6 +3,8 @@ package configuration;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by marco on 24/06/17.
  */
@@ -11,6 +13,18 @@ public class AppConfiguration {
     public static final String FILENAME = "/Users/marco/Desktop/application.properties";
     public static final long TS_MATCH_START = 10753295594424116L;
     public static final long TS_MATCH_STOP = 14879639146403495L;
+    public static final long TS_INTERVAL_START = 12557295594424116L;
+    public static final long TS_INTERVAL_STOP = 13086639146403495L;
+    public static int VERTICAL_CEILS = 13;
+    public static int HORIZONTAL_CEILS = 8;
+    public static int X_MIN_FIELD = 0;
+    public static int X_MAX_FIELD = 52477;
+    public static int Y_MAX_FIELD = 33941;
+    public static int Y_MIN_FIELD = -33939;
+    public static int X_STEP = (abs(AppConfiguration.X_MIN_FIELD) + abs(AppConfiguration.X_MAX_FIELD))/AppConfiguration.HORIZONTAL_CEILS;
+    public static int Y_STEP = (abs(AppConfiguration.Y_MIN_FIELD) + abs(AppConfiguration.Y_MAX_FIELD))/AppConfiguration.VERTICAL_CEILS;
+
+
     public static final String OUTPUT_FILE = "/Users/marco/Desktop/dataset";
 
     // watermark
@@ -18,11 +32,6 @@ public class AppConfiguration {
 
     // dataset
     public static String DATASET_FILE = "/Users/marco/Downloads/full-game";
-
-    // zookeeper host & kafka broker & topic
-    public static String CONSUMER_ZOOKEEPER_HOST = "localhost:2181";
-    public static String CONSUMER_KAFKA_BROKER = "localhost:9092";
-    public static String PRODUCER_KAFKA_BROKER = "localhost:9092";
 
 
     public static void readConfiguration() {
@@ -40,10 +49,6 @@ public class AppConfiguration {
             // set tuple for test
             DATASET_FILE = prop.getProperty("DATASET_FILE");
 
-            // zookeeper host & kafka broker
-            CONSUMER_ZOOKEEPER_HOST = prop.getProperty("CONSUMER_ZOOKEEPER_HOST");
-            CONSUMER_KAFKA_BROKER = prop.getProperty("CONSUMER_KAFKA_BROKER");
-            PRODUCER_KAFKA_BROKER = prop.getProperty("PRODUCER_KAFKA_BROKER");
 
 
 
