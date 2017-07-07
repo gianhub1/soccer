@@ -1,9 +1,14 @@
 package core;
 
+/**
+ * Created by marco on 07/07/17.
+ */
+
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
 import model.SensorData;
-import operator.flatmap.StringMapper;
+import operator.filter.NoBallsAndRefsFilter;
+import operator.flatmap.StringMapperFD;
 import operator.fold.AggregateFF;
 import operator.fold.AverageFF;
 import operator.key.SensorKey;
@@ -35,15 +40,15 @@ import time.SensorDataExtractor;
  *  –  entire match
  *
  */
-public class QueryOne {
+public class QueryOneFD {
 
     public static void main(String[] args) throws Exception {
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
-                .flatMap(new StringMapper());
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FULL_DATASET_FILE).setParallelism(1)
+                .flatMap(new StringMapperFD()).filter(new NoBallsAndRefsFilter());
         /**
          * Average speed and total distance by sid in 1 minute
          */
@@ -70,7 +75,7 @@ public class QueryOne {
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //allMatchPlayerOutput.print();
 
-        env.execute("SoccerQueryOne");
+        env.execute("SoccerQueryOneFD");
 
     }
 }

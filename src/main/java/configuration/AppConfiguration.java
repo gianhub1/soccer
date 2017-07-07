@@ -25,13 +25,13 @@ public class AppConfiguration {
     public static int Y_STEP = (abs(AppConfiguration.Y_MIN_FIELD) + abs(AppConfiguration.Y_MAX_FIELD))/AppConfiguration.VERTICAL_CEILS;
 
 
-    public static final String OUTPUT_FILE = "/Users/marco/Desktop/dataset";
+    public static String FILTERED_DATASET_FILE = "/Users/marco/Desktop/dataset";
 
     // watermark
     public static long WATERMARK_INTERVAL = 1000;
 
     // dataset
-    public static String DATASET_FILE = "/Users/marco/Downloads/full-game";
+    public static String FULL_DATASET_FILE = "/Users/marco/Downloads/full-game";
 
 
     public static void readConfiguration() {
@@ -47,7 +47,8 @@ public class AppConfiguration {
             WATERMARK_INTERVAL = Long.parseLong(prop.getProperty("WATERMARK_INTERVAL"));
 
             // set tuple for test
-            DATASET_FILE = prop.getProperty("DATASET_FILE");
+            FILTERED_DATASET_FILE = prop.getProperty("FILTERED_DATASET_FILE");
+            FULL_DATASET_FILE = prop.getProperty("FULL_DATASET_FILE");
 
 
 

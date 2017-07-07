@@ -3,7 +3,8 @@ package core;
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
 import model.SensorData;
-import operator.flatmap.StringMapper;
+import operator.filter.NoBallsAndRefsFilter;
+import operator.flatmap.StringMapperFD;
 import operator.fold.AggregateFF;
 import operator.fold.AverageFF;
 import operator.fold.RankFF;
@@ -25,31 +26,18 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
 import time.TupleExtractor;
 
-
 /**
- * Created by marco on 24/06/17.
+ * Created by marco on 07/07/17.
  */
-
-/**
- *
- * Goal: analyze the running performance of every player participating in the game
- * •  Output2: top-5 players by average speed
- ts_start, ts_stop, player_id_1, avg_speed_1, player_id_2, avg_speed_2, player_id_3, avg_speed_3, ...
- * •  The aggregate running statistics must be calculated using three different time windows:
- *  –  1 minute
- *  –  5 minutes
- *  –  entire match
- *
- */
-public class QueryTwo {
+public class QueryTwoFD {
 
     public static void main(String[] args) throws Exception {
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
-                .flatMap(new StringMapper());
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FULL_DATASET_FILE).setParallelism(1)
+                .flatMap(new StringMapperFD()).filter(new NoBallsAndRefsFilter());
         /**
          * Average speed by sid in 1 minute
          */
@@ -84,7 +72,7 @@ public class QueryTwo {
         //rankMatchOutput.print();
 
 
-        env.execute("SoccerQueryTwo");
+        env.execute("SoccerQueryTwoFD");
 
     }
 }

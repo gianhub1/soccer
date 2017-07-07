@@ -14,16 +14,24 @@ public class NoBallsAndRefsFilter implements FilterFunction<SensorData> {
 
     @Override
     public boolean filter(SensorData sensorData) throws Exception {
-        return (sensorData!=null && !isPlayer(sensorData.getKey()) && !prePostMatchEvent(sensorData.getTs()));
+        if (!isInvalid(sensorData.getSid()) && !prePostMatchEvent(sensorData.getTs()) && !inInterval(sensorData.getTs())){
+            sensorData.setTs(sensorData.getTs()/1000000000);
+            return true;
+        }
+        return false;
     }
 
-    public boolean isPlayer(String sid){
+    public static boolean isInvalid(long sid){
         return ((DatasetMap.getDatasetMap().get(sid)==null || DatasetMap.getDatasetMap().get(sid).equals("Ball")
-        || DatasetMap.getDatasetMap().get(sid).equals("Hand") || DatasetMap.getDatasetMap().get(sid).equals("Referee")));
+                || DatasetMap.getDatasetMap().get(sid).equals("Hand") || DatasetMap.getDatasetMap().get(sid).equals("Referee")));
     }
 
-    public boolean prePostMatchEvent(long timestamp){
+    public static boolean prePostMatchEvent(long timestamp){
         return (timestamp < AppConfiguration.TS_MATCH_START || timestamp > AppConfiguration.TS_MATCH_STOP);
+    }
+
+    public static boolean inInterval (long timestamp){
+        return (timestamp > AppConfiguration.TS_INTERVAL_START && timestamp < AppConfiguration.TS_INTERVAL_STOP);
     }
 
 }

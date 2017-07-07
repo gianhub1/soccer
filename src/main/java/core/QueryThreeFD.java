@@ -3,7 +3,8 @@ package core;
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
 import model.SensorData;
-import operator.flatmap.StringMapper;
+import operator.filter.NoBallsAndRefsFilter;
+import operator.flatmap.StringMapperFD;
 import operator.fold.HeatMapAggregateFF;
 import operator.fold.HeatMapFF;
 import operator.key.HeatMapKey;
@@ -19,16 +20,16 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
 
 /**
- * Created by marco on 24/06/17.
+ * Created by marco on 07/07/17.
  */
-public class QueryThree {
+public class QueryThreeFD {
 
     public static void main(String[] args) throws Exception{
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE)
-                .setParallelism(1).flatMap(new StringMapper());
+        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FULL_DATASET_FILE)
+                .setParallelism(1).flatMap(new StringMapperFD()).filter(new NoBallsAndRefsFilter());
 
         WindowedStream windowedSDS = fileStream.assignTimestampsAndWatermarks(new SensorDataExtractor()).keyBy(new SensorSid()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple4<>(0L,null, null,0L), new HeatMapFF(),new HeatMapWF());
@@ -38,7 +39,7 @@ public class QueryThree {
 
         //playerHeatMapOutput.print();
 
-        env.execute("SoccerQueryThree");
+        env.execute("SoccerQueryThreeFD");
 
     }
 }

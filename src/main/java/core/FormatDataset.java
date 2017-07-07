@@ -22,8 +22,8 @@ public class FormatDataset {
     public static void main(String[] args) throws Exception {
 
         DatasetMap.initMap();
-        Reader in = new FileReader(AppConfiguration.DATASET_FILE);
-        Writer out = new FileWriter(AppConfiguration.OUTPUT_FILE+"_new");
+        Reader in = new FileReader(AppConfiguration.FULL_DATASET_FILE);
+        Writer out = new FileWriter(AppConfiguration.FILTERED_DATASET_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
         int i = 0 ;
         for (CSVRecord record : records) {
