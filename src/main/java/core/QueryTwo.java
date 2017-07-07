@@ -13,7 +13,7 @@ import operator.window.PlayerWF;
 import operator.window.RankWF;
 import operator.window.SensorWF;
 import org.apache.flink.api.java.tuple.Tuple3;
-import org.apache.flink.api.java.tuple.Tuple5;
+import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple6;
 import org.apache.flink.streaming.api.datastream.AllWindowedStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -53,13 +53,13 @@ public class QueryTwo {
          * Average speed by sid in 1 minute
          */
         WindowedStream windowedSDS = fileStream.assignTimestampsAndWatermarks(new SensorDataExtractor()).keyBy(new SensorSid()).timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple5<>(0L,0L, null, 0d,0L), new AverageFF(true),new SensorWF());
+        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple4<>(0L,0L, null,0L), new AverageFF(),new SensorWF());
 
         /**
          * Average speed by player in 1 minute
          */
         WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(), new PlayerWF());
+        SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
 
         /**
          * Top 5 rank in 1 minute
@@ -73,7 +73,7 @@ public class QueryTwo {
          */
         AllWindowedStream rankFiveMinuteWindow = minutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
-        rankFiveMinuteOutput.print();
+        //rankFiveMinuteOutput.print();
 
         /**
          * Top 5 rank in all match

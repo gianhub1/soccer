@@ -9,6 +9,11 @@ import org.apache.flink.api.java.tuple.Tuple6;
  */
 public class AggregateFF implements FoldFunction<Tuple5<Long, Long,String,Double,Double>, Tuple6<Long, Long,String,Double,Double,Long>> {
 
+    private boolean average;
+
+    public AggregateFF(boolean average){
+        this.average = average;
+    }
     @Override
     public Tuple6<Long, Long,String,Double,Double,Long> fold(Tuple6<Long, Long,String,Double,Double,Long> in, Tuple5<Long, Long,String,Double,Double> stream) throws Exception {
         if(!in.f2.equals("")) {
@@ -22,7 +27,12 @@ public class AggregateFF implements FoldFunction<Tuple5<Long, Long,String,Double
                 stop_timestamp = in.f1;
             else
                 stop_timestamp = stream.f1;
-            return new Tuple6<>(start_timestamp, stop_timestamp, stream.f2, in.f3 + stream.f3, (in.f4 + (stream.f4 - in.f4) / (in.f5 + 1)), in.f5 + 1);
+            double distance = 0;
+            if (average)
+                distance =  (in.f3 + (stream.f3 - in.f3) / (in.f5 + 1));
+            else
+                distance = in.f3 + stream.f3;
+            return new Tuple6<>(start_timestamp, stop_timestamp, stream.f2, distance, (in.f4 + (stream.f4 - in.f4) / (in.f5 + 1)), in.f5 + 1);
         }
         else
             return new Tuple6<>(stream.f0,stream.f1, stream.f2,stream.f3,stream.f4,1L);
