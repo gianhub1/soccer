@@ -14,6 +14,8 @@ public class NoBallsAndRefsFilter implements FilterFunction<SensorData> {
 
     @Override
     public boolean filter(SensorData sensorData) throws Exception {
+        if (DatasetMap.getDatasetMap() == null)
+            DatasetMap.initMap();
         if (!isInvalid(sensorData.getSid()) && !prePostMatchEvent(sensorData.getTs()) && !inInterval(sensorData.getTs())){
             sensorData.setTs(sensorData.getTs()/1000000000);
             return true;
