@@ -30,13 +30,25 @@ public class QueryThree {
         DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE)
                 .setParallelism(1).flatMap(new StringMapper());
 
+        /**
+         * Minute HeatMap by leg
+         */
         WindowedStream windowedSDS = fileStream.assignTimestampsAndWatermarks(new SensorDataExtractor()).keyBy(new SensorSid()).timeWindow(Time.minutes(1));
         SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple4<>(0L,null, null,0L), new HeatMapFF(),new HeatMapWF());
 
-        WindowedStream playerHeatMapWindow = sidOutput.keyBy(new HeatMapKey()).timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator playerHeatMapOutput = playerHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
+        /**
+         * Minute HeatMap by player
+         */
+        WindowedStream playerMinuteHeatMapWindow = sidOutput.keyBy(new HeatMapKey()).timeWindow(Time.minutes(1));
+        SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(true));
+        //playerMinuteHeatMapOutput.print();
 
-        //playerHeatMapOutput.print();
+        /**
+         * Match HeatMap by player
+         */
+        WindowedStream playerMatchHeatMapWindow = sidOutput.keyBy(new HeatMapKey()).timeWindow((Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
+        SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));
+        //playerMatchHeatMapOutput.print();
 
         env.execute("SoccerQueryThree");
 

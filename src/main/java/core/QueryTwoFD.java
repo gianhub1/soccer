@@ -67,7 +67,7 @@ public class QueryTwoFD {
         /**
          * Top 5 rank in all match
          */
-        AllWindowedStream rankMatchMinuteWindow = minutePlayerOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil(69))));
+        AllWindowedStream rankMatchMinuteWindow = minutePlayerOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
         SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMatchOutput.print();
 

@@ -25,8 +25,10 @@ public class HeatMapWF implements WindowFunction<Tuple4<Long,String,List<Long>,L
         returnValue.f0 = latest.f0;
         returnValue.f1 = DatasetMap.getDatasetMap().get(Long.parseLong(key));
         List<HeatMap> heatMap = new ArrayList<>();
-        for (int i = 0 ; i < latest.f2.size() ; i++ )
-            heatMap.add(new HeatMap(i, ((double)latest.f2.get(i))/latest.f3*100));
+        for (int i = 0 ; i < latest.f2.size() ; i++ ){
+            if (latest.f3 > 0 )
+                heatMap.add(new HeatMap(i, ((double)latest.f2.get(i))/latest.f3*100));
+        }
         returnValue.f2 = heatMap;
         collector.collect(returnValue);
     }
