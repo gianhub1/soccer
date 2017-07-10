@@ -27,7 +27,8 @@ public class QueryThree {
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment(args);
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
+        DataStream<SensorData> fileStream = env
+                .readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
                 .flatMap(new StringMapper());
 
         /**
@@ -42,7 +43,8 @@ public class QueryThree {
         /**
          * Minute HeatMap by player
          */
-        WindowedStream playerMinuteHeatMapWindow = sidOutput.keyBy(new HeatMapKey())
+        WindowedStream playerMinuteHeatMapWindow = sidOutput
+                .keyBy(new HeatMapKey())
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(true));
         //playerMinuteHeatMapOutput.print();
@@ -50,7 +52,8 @@ public class QueryThree {
         /**
          * Match HeatMap by player
          */
-        WindowedStream playerMatchHeatMapWindow = sidOutput.keyBy(new HeatMapKey())
+        WindowedStream playerMatchHeatMapWindow = sidOutput
+                .keyBy(new HeatMapKey())
                 .timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));

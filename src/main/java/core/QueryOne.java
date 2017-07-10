@@ -52,32 +52,39 @@ public class QueryOne {
                 .assignTimestampsAndWatermarks(new SensorDataExtractor())
                 .keyBy(new SensorSid())
                 .timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator sidOutput = windowedSDS.fold(new Tuple4<>(0L,0L, null,0L), new AverageFF(),new SensorWF());
+        SingleOutputStreamOperator sidOutput = windowedSDS
+                .fold(new Tuple4<>(0L,0L, null,0L), new AverageFF(),new SensorWF());
         /**
          * Average speed and total distance by player in 1 minute
          */
-        WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey())
+        WindowedStream minutePlayerStream = sidOutput
+                .keyBy(new SensorKey())
                 .timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
+        SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream
+                .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
         //minutePlayerOutput.print();
 
         /**
          * Average speed and total distance by player in 5 minute
          */
-        WindowedStream fiveMinutePlayerStream = minutePlayerOutput.keyBy(new SensorKey())
+        WindowedStream fiveMinutePlayerStream = minutePlayerOutput
+                .keyBy(new SensorKey())
                 .timeWindow(Time.minutes(5));
-        SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
+        SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream
+                .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //fiveMinutePlayerOutput.print();
 
         /**
          * Average speed and total distance by player in all match
          */
-        WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor())
+        WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput
+                .assignTimestampsAndWatermarks(new TupleExtractor())
                 .keyBy(new SensorKey())
                 .timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
-        SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
-        //allMatchPlayerOutput.print();
+        SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream
+                .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
+         allMatchPlayerOutput.print();
 
         env.execute("SoccerQueryOne");
 
