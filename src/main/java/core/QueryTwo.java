@@ -79,6 +79,7 @@ public class QueryTwo {
         SingleOutputStreamOperator rankMinuteOutput = rankMinuteWindow
                 .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMinuteOutput.print();
+        rankMinuteOutput.writeAsText(AppConfiguration.QUERY_TWO_OUTPUT + "_1M").setParallelism(1);
 
         /**
          * Top 5 rank in 5 minutes
@@ -89,6 +90,8 @@ public class QueryTwo {
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow
                 .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankFiveMinuteOutput.print();
+        rankFiveMinuteOutput.writeAsText(AppConfiguration.QUERY_TWO_OUTPUT + "_5M").setParallelism(1);
+
 
         /**
          * Top 5 rank in all match
@@ -100,7 +103,7 @@ public class QueryTwo {
         SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow
                 .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMatchOutput.print();
-
+        rankMatchOutput.writeAsText(AppConfiguration.QUERY_TWO_OUTPUT + "_AM").setParallelism(1);
 
         env.execute("SoccerQueryTwo");
 
