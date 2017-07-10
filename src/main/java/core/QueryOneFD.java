@@ -23,6 +23,7 @@ import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
+import time.TupleExtractor;
 
 
 /**
@@ -71,7 +72,10 @@ public class QueryOneFD {
         /**
          * Average speed and total distance by player in all match
          */
-        WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.keyBy(new SensorKey()).timeWindow(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60)));
+        WindowedStream allMatchPlayerStream = fiveMinutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor())
+                .keyBy(new SensorKey())
+                .timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
+                .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //allMatchPlayerOutput.print();
 

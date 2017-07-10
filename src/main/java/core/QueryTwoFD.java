@@ -47,27 +47,32 @@ public class QueryTwoFD {
         /**
          * Average speed by player in 1 minute
          */
-        WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey()).timeWindow(Time.minutes(1));
+        WindowedStream minutePlayerStream = sidOutput.keyBy(new SensorKey())
+                .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream.fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
 
         /**
          * Top 5 rank in 1 minute
          */
-        AllWindowedStream rankMinuteWindow = minutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(1)));
+        AllWindowedStream rankMinuteWindow = minutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor())
+                .windowAll(TumblingEventTimeWindows.of(Time.minutes(1)));
         SingleOutputStreamOperator rankMinuteOutput = rankMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMinuteOutput.print();
 
         /**
          * Top 5 rank in 5 minutes
          */
-        AllWindowedStream rankFiveMinuteWindow = minutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor()).windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
+        AllWindowedStream rankFiveMinuteWindow = minutePlayerOutput.assignTimestampsAndWatermarks(new TupleExtractor())
+                .windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankFiveMinuteOutput.print();
 
         /**
          * Top 5 rank in all match
          */
-        AllWindowedStream rankMatchMinuteWindow = minutePlayerOutput.windowAll(TumblingEventTimeWindows.of(Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
+        AllWindowedStream rankMatchMinuteWindow = minutePlayerOutput
+                .windowAll(TumblingEventTimeWindows.of(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET )
+                        ,Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET -1)));
         SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow.fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
         //rankMatchOutput.print();
 

@@ -47,7 +47,8 @@ public class QueryThreeFD {
         /**
          * Match HeatMap by player
          */
-        WindowedStream playerMatchHeatMapWindow = sidOutput.keyBy(new HeatMapKey()).timeWindow((Time.minutes((long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60))));
+        WindowedStream playerMatchHeatMapWindow = sidOutput.keyBy(new HeatMapKey()).timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
+                .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));
         //playerMatchHeatMapOutput.print();
 

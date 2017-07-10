@@ -15,6 +15,7 @@ public class AppConfiguration {
     public static final long TS_MATCH_STOP = 14879639146403495L;
     public static final long TS_INTERVAL_START = 12557295594424116L;
     public static final long TS_INTERVAL_STOP = 13086639146403495L;
+    public static final long OFFSET = 15 ;
     public static int VERTICAL_CEILS = 13;
     public static int HORIZONTAL_CEILS = 8;
     public static int X_MIN_FIELD = 0;
@@ -23,7 +24,7 @@ public class AppConfiguration {
     public static int Y_MIN_FIELD = -33939;
     public static int X_STEP = (abs(AppConfiguration.X_MIN_FIELD) + abs(AppConfiguration.X_MAX_FIELD))/AppConfiguration.HORIZONTAL_CEILS;
     public static int Y_STEP = (abs(AppConfiguration.Y_MIN_FIELD) + abs(AppConfiguration.Y_MAX_FIELD))/AppConfiguration.VERTICAL_CEILS;
-
+    public static long MATCH_DURATION = (long) Math.ceil((((AppConfiguration.TS_MATCH_STOP-AppConfiguration.TS_MATCH_START)/1000000000)/1000)/60);
 
     public static String FILTERED_DATASET_FILE = "/Users/marco/Desktop/dataset";
 
