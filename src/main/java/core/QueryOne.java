@@ -40,7 +40,7 @@ public class QueryOne {
 
     public static void main(String[] args) throws Exception {
 
-        final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
+        final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment(args);
 
 
         DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)

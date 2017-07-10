@@ -33,7 +33,7 @@ public class QueryTwoFD {
 
     public static void main(String[] args) throws Exception {
 
-        final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment();
+        final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment(args);
 
 
         DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FULL_DATASET_FILE).setParallelism(1)

@@ -11,10 +11,14 @@ import utils.DatasetMap;
 
 public class FlinkEnvConfig {
 
-    public static final StreamExecutionEnvironment setupExecutionEnvironment() {
+    public static final StreamExecutionEnvironment setupExecutionEnvironment(String[] args) {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DatasetMap.initMap();
+        if (args != null && args[0]!= null){
+            AppConfiguration.FILTERED_DATASET_FILE = args[0];
+            AppConfiguration.FULL_DATASET_FILE = args[0];
+        }
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getConfig().setAutoWatermarkInterval(AppConfiguration.WATERMARK_INTERVAL);
 
