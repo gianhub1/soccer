@@ -15,7 +15,7 @@ public class FlinkEnvConfig {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DatasetMap.initMap();
-        if (args != null && args[0]!= null){
+        if (args != null && args.length>0 && args[0]!= null){
             AppConfiguration.FILTERED_DATASET_FILE = args[0];
             AppConfiguration.FULL_DATASET_FILE = args[0];
         }
