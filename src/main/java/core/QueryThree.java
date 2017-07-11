@@ -48,7 +48,7 @@ public class QueryThree {
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(true));
         //playerMinuteHeatMapOutput.print();
-        playerMinuteHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_1M").setParallelism(1);
+        //playerMinuteHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_1M").setParallelism(1);
 
 
         /**
@@ -60,7 +60,7 @@ public class QueryThree {
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));
         //playerMatchHeatMapOutput.print();
-        playerMatchHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_AM").setParallelism(1);
+        //playerMatchHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_AM").setParallelism(1);
 
 
         env.execute("SoccerQueryThree");
