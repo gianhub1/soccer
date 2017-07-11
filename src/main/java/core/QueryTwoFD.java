@@ -11,7 +11,6 @@ import operator.fold.RankFF;
 import operator.key.SensorKey;
 import operator.key.SensorSid;
 import operator.window.PlayerWF;
-import operator.window.RankWF;
 import operator.window.SensorWF;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
@@ -66,7 +65,7 @@ public class QueryTwoFD {
                 .assignTimestampsAndWatermarks(new TupleExtractor())
                 .windowAll(TumblingEventTimeWindows.of(Time.minutes(1)));
         SingleOutputStreamOperator rankMinuteOutput = rankMinuteWindow
-                .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
+                .fold(new Tuple3<>(0L, 0L, null), new RankFF()).setParallelism(1);
         //rankMinuteOutput.print();
 
         /**
@@ -76,7 +75,7 @@ public class QueryTwoFD {
                 .assignTimestampsAndWatermarks(new TupleExtractor())
                 .windowAll(TumblingEventTimeWindows.of(Time.minutes(5)));
         SingleOutputStreamOperator rankFiveMinuteOutput = rankFiveMinuteWindow
-                .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
+                .fold(new Tuple3<>(0L, 0L, null), new RankFF()).setParallelism(1);
         //rankFiveMinuteOutput.print();
 
         /**
@@ -86,7 +85,7 @@ public class QueryTwoFD {
                 .windowAll(TumblingEventTimeWindows.of(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET )
                         ,Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET -1)));
         SingleOutputStreamOperator rankMatchOutput = rankMatchMinuteWindow
-                .fold(new Tuple3<>(0L, 0L, null), new RankFF(), new RankWF()).setParallelism(1);
+                .fold(new Tuple3<>(0L, 0L, null), new RankFF()).setParallelism(1);
         //rankMatchOutput.print();
 
 
