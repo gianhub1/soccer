@@ -13,6 +13,11 @@ public class AppConfiguration {
     public static final long TS_INTERVAL_START = 12557295594424116L;
     public static final long TS_INTERVAL_STOP = 13086639146403495L;
     public static final long OFFSET = 15 ;
+    public static final String TOPIC = "soccer";
+    public static final String KEY = "soccer";
+    public static String CONSUMER_ZOOKEEPER_HOST = "localhost:2181";
+    public static String CONSUMER_KAFKA_BROKER = "localhost:9092";
+    public static String PRODUCER_KAFKA_BROKER = "localhost:9092";
     public static int VERTICAL_CEILS = 13;
     public static int HORIZONTAL_CEILS = 8;
     public static int X_MIN_FIELD = 0;
