@@ -63,7 +63,7 @@ public class QueryOne {
         SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
         //minutePlayerOutput.print();
-        //minutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_1M").setParallelism(1);
+        minutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_1M").setParallelism(1);
 
         /**
          * Average speed and total distance by player in 5 minute
@@ -74,7 +74,7 @@ public class QueryOne {
         SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //fiveMinutePlayerOutput.print();
-        //fiveMinutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_5M").setParallelism(1);
+        fiveMinutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_5M").setParallelism(1);
 
 
         /**
@@ -88,7 +88,7 @@ public class QueryOne {
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //allMatchPlayerOutput.print();
-        //allMatchPlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_AM").setParallelism(1);
+        allMatchPlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_AM").setParallelism(1);
 
         env.execute("SoccerQueryOne");
 
