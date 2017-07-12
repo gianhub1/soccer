@@ -36,7 +36,7 @@ public class AppConfiguration {
     public static String FILTERED_DATASET_FILE = "/Users/marco/Desktop/dataset";
 
     //OUTPUT
-    public static final String QUERY_ONE_OUTPUT = "/Users/marco/Desktop/results/q1";
-    public static final String QUERY_TWO_OUTPUT = "/Users/marco/Desktop/results/q2";
-    public static final String QUERY_THREE_OUTPUT = "/Users/marco/Desktop/results/q3";
+    public static String QUERY_ONE_OUTPUT = "/Users/marco/Desktop/results/q1";
+    public static String QUERY_TWO_OUTPUT = "/Users/marco/Desktop/results/q2";
+    public static String QUERY_THREE_OUTPUT = "/Users/marco/Desktop/results/q3";
 }
