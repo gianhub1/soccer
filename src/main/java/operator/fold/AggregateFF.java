@@ -4,9 +4,7 @@ import org.apache.flink.api.common.functions.FoldFunction;
 import org.apache.flink.api.java.tuple.Tuple5;
 import org.apache.flink.api.java.tuple.Tuple6;
 
-/**
- * Created by marco on 06/07/17.
- */
+
 public class AggregateFF implements FoldFunction<Tuple5<Long, Long,String,Double,Double>, Tuple6<Long, Long,String,Double,Double,Long>> {
 
     private boolean average;

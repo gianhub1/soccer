@@ -10,9 +10,7 @@ import utils.KafkaConnectors;
 import java.io.FileReader;
 import java.io.Reader;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class WriteToKafka {
 
 

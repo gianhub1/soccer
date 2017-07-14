@@ -4,9 +4,7 @@ import model.SensorData;
 import org.apache.flink.api.common.functions.FoldFunction;
 import org.apache.flink.api.java.tuple.Tuple4;
 
-/**
- * Created by marco on 04/07/17.
- */
+
 public class AverageFF implements FoldFunction<SensorData, Tuple4<Long, Long,SensorData,Long>> {
 
 

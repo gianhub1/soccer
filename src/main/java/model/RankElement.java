@@ -1,8 +1,6 @@
 package model;
 
-/**
- * Created by marco on 05/07/17.
- */
+
 public class RankElement implements Comparable<RankElement>{
 
     private String player;

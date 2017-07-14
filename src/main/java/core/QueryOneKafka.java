@@ -1,8 +1,5 @@
 package core;
 
-/**
- * Created by marco on 12/07/17.
- */
 
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;

@@ -10,9 +10,7 @@ import org.apache.flink.streaming.util.serialization.SerializationSchema;
 
 import java.io.IOException;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class SensorDataSchema implements DeserializationSchema<SensorData>, SerializationSchema<SensorData> {
 
     public ObjectMapper mapper;

@@ -10,11 +10,6 @@ import java.io.FileWriter;
 import java.io.Reader;
 import java.io.Writer;
 
-/**
- * Created by marco on 24/06/17.
- */
-
-//TODO DIMENSIONI IN MM DIVISIONE PER 1000
 public class FormatDataset {
 
 

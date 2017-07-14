@@ -5,9 +5,6 @@ import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.Window;
 import org.apache.flink.util.Collector;
 
-/**
- * Created by marco on 10/07/17.
- */
 public class TupleAverageWF implements WindowFunction<Tuple5<Long,Long,String,Double,Double>,Tuple5<Long,Long,String,Double,Double>,String,Window> {
 
     private boolean average = false;

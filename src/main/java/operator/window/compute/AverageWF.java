@@ -7,9 +7,7 @@ import org.apache.flink.streaming.api.windowing.windows.Window;
 import org.apache.flink.util.Collector;
 import utils.DatasetMap;
 
-/**
- * Created by marco on 10/07/17.
- */
+
 public class AverageWF implements WindowFunction<SensorData,Tuple5<Long,Long,String,Double,Double>,String,Window> {
 
 

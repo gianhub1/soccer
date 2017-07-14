@@ -5,9 +5,7 @@ import model.SensorData;
 import org.apache.flink.api.common.functions.FilterFunction;
 import utils.DatasetMap;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class NoBallsAndRefsFilter implements FilterFunction<SensorData> {
 
     private static final long serialVersionUID = 1L;

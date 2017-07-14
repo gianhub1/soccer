@@ -1,8 +1,6 @@
 package utils;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 import model.SensorData;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
 import org.apache.kafka.clients.producer.KafkaProducer;

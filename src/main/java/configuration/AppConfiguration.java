@@ -2,9 +2,7 @@ package configuration;
 
 import static java.lang.Math.abs;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class AppConfiguration {
 
     //DATASET UTILS

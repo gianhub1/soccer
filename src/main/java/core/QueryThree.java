@@ -18,9 +18,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class QueryThree {
 
     public static void main(String[] args) throws Exception{

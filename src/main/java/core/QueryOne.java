@@ -21,9 +21,7 @@ import time.SensorDataExtractor;
 import time.TupleExtractor;
 
 
-/**
- * Created by marco on 24/06/17.
- */
+
 
 /**
  *

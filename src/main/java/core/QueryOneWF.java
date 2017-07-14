@@ -16,9 +16,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
 import time.TupleExtractor;
 
-/**
- * Created by marco on 10/07/17.
- */
+
 public class QueryOneWF {
 
     public static void main(String[] args) throws Exception {

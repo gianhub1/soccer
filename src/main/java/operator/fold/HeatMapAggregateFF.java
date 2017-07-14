@@ -9,9 +9,7 @@ import org.apache.flink.api.java.tuple.Tuple4;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class HeatMapAggregateFF implements FoldFunction<Tuple3<Long,String,List<HeatMap>>, Tuple4<Long, String,List<HeatMap>,List<Long>>> {
 
     @Override

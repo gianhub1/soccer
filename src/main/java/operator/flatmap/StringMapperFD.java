@@ -5,9 +5,7 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 import utils.DatasetMap;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class StringMapperFD implements FlatMapFunction<String, SensorData> {
     @Override
     public void flatMap(String o, Collector collector) throws Exception {

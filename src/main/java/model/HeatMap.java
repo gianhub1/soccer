@@ -1,8 +1,6 @@
 package model;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class HeatMap {
 
     private Integer cell_id;

@@ -2,9 +2,7 @@ package utils;
 
 import java.util.HashMap;
 
-/**
- * Created by marco on 24/06/17.
- */
+
 public class DatasetMap {
 
     private static HashMap<Long, String> datasetMap = null;

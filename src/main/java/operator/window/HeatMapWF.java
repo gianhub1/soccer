@@ -11,9 +11,7 @@ import utils.DatasetMap;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class HeatMapWF implements WindowFunction<Tuple4<Long,String,List<Long>,Long>,Tuple3<Long,String,List<HeatMap>>,String,Window> {
 
 

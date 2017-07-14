@@ -7,9 +7,7 @@ import org.apache.flink.api.java.tuple.Tuple5;
 
 import java.util.TreeSet;
 
-/**
- * Created by marco on 05/07/17.
- */
+
 public class RankFF implements FoldFunction<Tuple5<Long,Long,String,Double,Double>, Tuple3<Long, Long,TreeSet<RankElement>>> {
 
 

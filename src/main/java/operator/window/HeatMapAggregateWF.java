@@ -9,9 +9,7 @@ import org.apache.flink.util.Collector;
 
 import java.util.List;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class HeatMapAggregateWF implements WindowFunction<Tuple4<Long,String,List<HeatMap>,List<Long>>,Tuple3<Long,String,List<HeatMap>>,String,Window> {
 
 

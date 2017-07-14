@@ -1,8 +1,6 @@
 package core;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
@@ -25,10 +23,6 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import time.SensorDataExtractor;
 import time.TupleExtractor;
 
-
-/**
- * Created by marco on 24/06/17.
- */
 
 /**
  *

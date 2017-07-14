@@ -8,9 +8,7 @@ import org.apache.flink.api.java.tuple.Tuple4;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by marco on 07/07/17.
- */
+
 public class HeatMapFF implements FoldFunction<SensorData, Tuple4<Long, String,List<Long>,Long>> {
 
 
