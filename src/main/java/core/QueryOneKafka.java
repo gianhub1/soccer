@@ -4,13 +4,14 @@ package core;
 import configuration.AppConfiguration;
 import configuration.FlinkEnvConfig;
 import model.SensorData;
+import operator.filter.NoBallsAndRefsFilter;
+import operator.flatmap.StringMapperFD;
 import operator.fold.AggregateFF;
 import operator.fold.AverageFF;
 import operator.key.SensorKey;
 import operator.key.SensorSid;
 import operator.window.PlayerWF;
 import operator.window.SensorWF;
-import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple6;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -40,19 +41,14 @@ public class QueryOneKafka {
 
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment(args);
 
-        FlinkKafkaConsumer010<SensorData> kafkaConsumer = KafkaConnectors.kafkaConsumer(AppConfiguration.TOPIC,AppConfiguration.CONSUMER_ZOOKEEPER_HOST,
+        FlinkKafkaConsumer010<String> kafkaConsumer = KafkaConnectors.kafkaConsumer(AppConfiguration.TOPIC,AppConfiguration.CONSUMER_ZOOKEEPER_HOST,
                 AppConfiguration.CONSUMER_KAFKA_BROKER);
 
-        DataStream<SensorData> sensorDataStream = env.addSource(kafkaConsumer).setParallelism(1);
-
-        DataStream<SensorData> interruptStream = sensorDataStream.filter(new FilterFunction<SensorData>() {
-            @Override
-            public boolean filter(SensorData sensorData) throws Exception {
-                if (sensorData.getKey().equals("END"))
-                    System.exit(0);
-                return true;
-            }
-        });
+        DataStream<SensorData> sensorDataStream = env
+                .addSource(kafkaConsumer)
+                .setParallelism(8)
+                .flatMap(new StringMapperFD())
+                .filter(new NoBallsAndRefsFilter());
 
         /**
          * Average speed and total distance by sid in 1 minute
@@ -71,9 +67,6 @@ public class QueryOneKafka {
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
-        //minutePlayerOutput.print();
-        minutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_1M_Kafka").setParallelism(1);
-
         /**
          * Average speed and total distance by player in 5 minute
          */
@@ -82,9 +75,6 @@ public class QueryOneKafka {
                 .timeWindow(Time.minutes(5));
         SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
-        //fiveMinutePlayerOutput.print();
-        fiveMinutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_5M_Kafka").setParallelism(1);
-
 
         /**
          * Average speed and total distance by player in all match
@@ -96,8 +86,6 @@ public class QueryOneKafka {
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
-        //allMatchPlayerOutput.print();
-        allMatchPlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_AM_Kafka").setParallelism(1);
 
         env.execute("SoccerQueryOneKafka");
 

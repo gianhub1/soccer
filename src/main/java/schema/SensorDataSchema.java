@@ -8,10 +8,8 @@ import org.apache.flink.api.java.typeutils.TypeExtractor;
 import org.apache.flink.streaming.util.serialization.DeserializationSchema;
 import org.apache.flink.streaming.util.serialization.SerializationSchema;
 
-import java.io.IOException;
 
-
-public class SensorDataSchema implements DeserializationSchema<SensorData>, SerializationSchema<SensorData> {
+public class SensorDataSchema implements DeserializationSchema<String>, SerializationSchema<SensorData> {
 
     public ObjectMapper mapper;
 
@@ -35,30 +33,19 @@ public class SensorDataSchema implements DeserializationSchema<SensorData>, Seri
     }
 
     @Override
-    public SensorData deserialize(byte[] message) {
+    public String deserialize(byte[] message) {
 
-        String jsonInString = new String(message);
-        this.mapper = new ObjectMapper();
-
-        try {
-            SensorData sensorData = this.mapper.readValue(jsonInString, SensorData.class);
-            return sensorData;
-
-        }  catch (IOException e) {
-            e.printStackTrace();
-            return null;
-
-        }
+        return new String(message);
 
     }
 
     @Override
-    public boolean isEndOfStream(SensorData nextElement) {
+    public boolean isEndOfStream(String nextElement) {
         return false;
     }
 
     @Override
-    public TypeInformation<SensorData> getProducedType() {
-        return TypeExtractor.getForClass(SensorData.class);
+    public TypeInformation<String> getProducedType() {
+        return TypeExtractor.getForClass(String.class);
     }
 }
