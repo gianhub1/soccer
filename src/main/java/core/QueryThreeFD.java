@@ -48,7 +48,7 @@ public class QueryThreeFD {
                 .keyBy(new HeatMapKey())
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow
-                .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(true));
+                .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
         //playerMinuteHeatMapOutput
 
         /**
@@ -59,7 +59,7 @@ public class QueryThreeFD {
                 .timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
         SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow
-                .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));
+                .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
         //playerMatchHeatMapOutput.print();
 
         env.execute("SoccerQueryThreeFD");

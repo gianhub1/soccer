@@ -44,7 +44,7 @@ public class QueryThree {
         WindowedStream playerMinuteHeatMapWindow = sidOutput
                 .keyBy(new HeatMapKey())
                 .timeWindow(Time.minutes(1));
-        SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(true));
+        SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
         //playerMinuteHeatMapOutput.print();
         playerMinuteHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_1M").setParallelism(1);
 
@@ -56,7 +56,7 @@ public class QueryThree {
                 .keyBy(new HeatMapKey())
                 .timeWindow(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET))
                 .allowedLateness(Time.minutes(AppConfiguration.MATCH_DURATION + AppConfiguration.OFFSET - 1));
-        SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF(false));
+        SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow.fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
         //playerMatchHeatMapOutput.print();
         playerMatchHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_AM").setParallelism(1);
 

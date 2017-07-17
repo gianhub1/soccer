@@ -13,11 +13,6 @@ import java.util.List;
 public class HeatMapAggregateWF implements WindowFunction<Tuple4<Long,String,List<HeatMap>,List<Long>>,Tuple3<Long,String,List<HeatMap>>,String,Window> {
 
 
-    private boolean log = false;
-
-    public HeatMapAggregateWF(boolean log){
-        this.log = log;
-    }
     @Override
     public void apply(String key, Window window, Iterable<Tuple4<Long, String, List<HeatMap>, List<Long>>> iterable, Collector<Tuple3<Long, String, List<HeatMap>>> collector) throws Exception {
         Tuple4<Long, String, List<HeatMap>, List<Long>> latest = iterable.iterator().next();
