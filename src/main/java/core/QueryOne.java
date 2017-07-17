@@ -41,7 +41,8 @@ public class QueryOne {
         final StreamExecutionEnvironment env = FlinkEnvConfig.setupExecutionEnvironment(args);
 
 
-        DataStream<SensorData> fileStream = env.readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
+        DataStream<SensorData> fileStream = env
+                .readTextFile(AppConfiguration.FILTERED_DATASET_FILE).setParallelism(1)
                 .flatMap(new StringMapper());
         /**
          * Average speed and total distance by sid in 1 minute
