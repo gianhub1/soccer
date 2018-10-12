@@ -49,7 +49,9 @@ public class QueryThreeFD {
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator playerMinuteHeatMapOutput = playerMinuteHeatMapWindow
                 .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
-        //playerMinuteHeatMapOutput
+        //playerMinuteHeatMapOutput.print();
+        playerMinuteHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_1M").setParallelism(1);
+
 
         /**
          * Match HeatMap by player
@@ -61,6 +63,7 @@ public class QueryThreeFD {
         SingleOutputStreamOperator playerMatchHeatMapOutput = playerMatchHeatMapWindow
                 .fold(new Tuple4<>(0L,null, null,null), new HeatMapAggregateFF(),new HeatMapAggregateWF());
         //playerMatchHeatMapOutput.print();
+        playerMatchHeatMapOutput.writeAsText(AppConfiguration.QUERY_THREE_OUTPUT + "_AM").setParallelism(1);
 
         env.execute("SoccerQueryThreeFD");
 

@@ -30,7 +30,7 @@ public class AppConfiguration {
     public static long WATERMARK_INTERVAL = 1000;
 
     // DATASET PATH
-    public static String FULL_DATASET_FILE = "/Users/marco/Downloads/full-game";
+    public static String FULL_DATASET_FILE = "/Users/marco/Documents/workspace/soccer/full-game";
     public static String FILTERED_DATASET_FILE = "/Users/marco/Desktop/dataset";
 
     //OUTPUT

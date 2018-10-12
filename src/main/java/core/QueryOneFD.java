@@ -55,6 +55,7 @@ public class QueryOneFD {
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator sidOutput = windowedSDS
                 .fold(new Tuple4<>(0L,0L, null,0L), new AverageFF(),new SensorWF());
+
         /**
          * Average speed and total distance by player in 1 minute
          */
@@ -63,6 +64,7 @@ public class QueryOneFD {
                 .timeWindow(Time.minutes(1));
         SingleOutputStreamOperator minutePlayerOutput = minutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(true), new PlayerWF());
+        minutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_1M").setParallelism(1);
         //minutePlayerOutput.print();
 
         /**
@@ -74,6 +76,8 @@ public class QueryOneFD {
         SingleOutputStreamOperator fiveMinutePlayerOutput = fiveMinutePlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //fiveMinutePlayerOutput.print();
+        fiveMinutePlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_5M").setParallelism(1);
+
 
         /**
          * Average speed and total distance by player in all match
@@ -86,6 +90,8 @@ public class QueryOneFD {
         SingleOutputStreamOperator allMatchPlayerOutput = allMatchPlayerStream
                 .fold(new Tuple6<>(0L,0L,"", 0d, 0d,0L), new AggregateFF(false), new PlayerWF());
         //allMatchPlayerOutput.print();
+        allMatchPlayerOutput.writeAsText(AppConfiguration.QUERY_ONE_OUTPUT + "_AM").setParallelism(1);
+
 
         env.execute("SoccerQueryOneFD");
 
